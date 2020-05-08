@@ -1,4 +1,5 @@
 var express = require('express');
+var createError = require('http-errors');
 var router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
@@ -11,7 +12,7 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'BlogServer';
 const client = new MongoClient(url, {useNewUrlParser: true});
 
-function getDocs(res, username, start_id, callback){
+function getDocs(res, username, start_id, next){
   let next_id = null;
   let posts = [];
   if (start_id == null){
@@ -34,6 +35,10 @@ function getDocs(res, username, start_id, callback){
       assert.equal(err, null);
       console.log('find all document');
       console.log(docs);
+      console.log(typeof docs);
+      if (docs.length == 0){
+        next(createError(404));
+      }
       if (docs.length > 3) {
         next_id = docs[3].postid;
         docs = docs.slice(0, 3);
@@ -66,9 +71,9 @@ router.get('/:username', function(req, res, next) {
   let username = req.params.username;
   let start_id = req.query.start;
   if (start_id == null){
-    getDocs(res, username, start_id);
+    getDocs(res, username, start_id, next);
   } else{
-    getDocs(res, username, start_id);
+    getDocs(res, username, start_id, next);
   }
 });
 
@@ -100,12 +105,14 @@ router.get('/:username/:postid', function(req, res, next) {
           body: res_body
         };
         posts.push(each_doc);
+        res.render('blogServer', {
+          username: username,
+          posts: posts,
+          next: null
+        });
+      }else{
+        next(createError(404));
       }
-      res.render('blogServer', {
-        username: username,
-        posts: posts,
-        next: null
-      });
     });
   });
 });
