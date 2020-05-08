@@ -11,41 +11,51 @@ const url = 'mongodb://localhost:27017';
 const dbName = 'BlogServer';
 const client = new MongoClient(url, {useNewUrlParser: true});
 
-function getDocs(err, callback){
+function getDocs(res, username, start_id, callback){
   let next_id = null;
   let posts = [];
-  assert.equal(null, err);
-  db = client.db(dbName);
-  console.log("Connected successfully to server");
-  db.collection('Posts').find({
-    'username' : username
-  }).sort({
-    'postid': 1
-  }).toArray(function(err, docs) {
-    assert.equal(err, null);
-    console.log('find all document');
-    console.log(docs);
-    if (docs.length > 3){
-      next_id = docs[3].postid;
-      docs = docs.slice(0,3);
-    }
-    for (let doc of docs){
-      let title = doc.title;
-      let parsedTitle = reader.parse(title);
-      let res_title = writer.render(parsedTitle);
-      let body = doc.body;
-      let parsedBody = reader.parse(body);
-      let res_body = writer.render(parsedBody);
-      let each_doc = {
-        title: res_title,
-        body: res_body
-      };
-      posts.push(each_doc);
-    }
-    res.render('blogServer', {
-      username: username,
-      posts: posts,
-      next: next_id
+  if (start_id == null){
+    start_id = Number.NEGATIVE_INFINITY;
+  }else{
+    start_id = parseInt(start_id, 10);
+  }
+  client.connect(function(err) {
+    assert.equal(null, err);
+    db = client.db(dbName);
+    console.log("Connected successfully to server");
+    db.collection('Posts').find({
+      'username': username,
+      'postid' : {
+        $gte: start_id
+      }
+    }).sort({
+      'postid': 1
+    }).toArray(function (err, docs) {
+      assert.equal(err, null);
+      console.log('find all document');
+      console.log(docs);
+      if (docs.length > 3) {
+        next_id = docs[3].postid;
+        docs = docs.slice(0, 3);
+      }
+      for (let doc of docs) {
+        let title = doc.title;
+        let parsedTitle = reader.parse(title);
+        let res_title = writer.render(parsedTitle);
+        let body = doc.body;
+        let parsedBody = reader.parse(body);
+        let res_body = writer.render(parsedBody);
+        let each_doc = {
+          title: res_title,
+          body: res_body
+        };
+        posts.push(each_doc);
+      }
+      res.render('blogServer', {
+        username: username,
+        posts: posts,
+        next: next_id
+      });
     });
   });
 }
@@ -55,80 +65,11 @@ router.get('/:username', function(req, res, next) {
   console.log("get username.");
   let username = req.params.username;
   let start_id = req.query.start;
-  let next_id = null;
-  let posts = [];
-  client.connect(function(err) {
-    assert.equal(null, err);
-    db = client.db(dbName);
-    console.log("Connected successfully to server");
-    if (start_id == null){
-      db.collection('Posts').find({
-        'username' : username
-      }).sort({
-        'postid': 1
-      }).toArray(function(err, docs) {
-        assert.equal(err, null);
-        console.log('find all documents');
-        console.log(docs);
-        if (docs.length > 3){
-          next_id = docs[3].postid;
-          docs = docs.slice(0,3);
-        }
-        for (let doc of docs){
-          let title = doc.title;
-          let parsedTitle = reader.parse(title);
-          let res_title = writer.render(parsedTitle);
-          let body = doc.body;
-          let parsedBody = reader.parse(body);
-          let res_body = writer.render(parsedBody);
-          let each_doc = {
-            title: res_title,
-            body: res_body
-          };
-          posts.push(each_doc);
-        }
-        res.render('blogServer', {
-          username: username,
-          posts: posts,
-          next: next_id
-        });
-      });
-    } else{
-      db.collection('Posts').find({
-        'username' : username,
-        'postid':{
-          $gte: parseInt(start_id, 10)}
-      }).sort({
-        'postid': 1
-      }).toArray(function(err, docs) {
-        assert.equal(err, null);
-        console.log('find all documents');
-        console.log(docs);
-        if (docs.length > 3){
-          next_id = docs[3].postid;
-          docs = docs.slice(0,3);
-        }
-        for (let doc of docs){
-          let title = doc.title;
-          let parsedTitle = reader.parse(title);
-          let res_title = writer.render(parsedTitle);
-          let body = doc.body;
-          let parsedBody = reader.parse(body);
-          let res_body = writer.render(parsedBody);
-          let each_doc = {
-            title: res_title,
-            body: res_body
-          }
-          posts.push(each_doc);
-        }
-        res.render('blogServer', {
-          username: username,
-          posts: posts,
-          next: next_id
-        });
-      });
-    }
-  });
+  if (start_id == null){
+    getDocs(res, username, start_id);
+  } else{
+    getDocs(res, username, start_id);
+  }
 });
 
 router.get('/:username/:postid', function(req, res, next) {
