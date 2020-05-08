@@ -23,7 +23,7 @@ function getDocs(err, callback){
     'postid': 1
   }).toArray(function(err, docs) {
     assert.equal(err, null);
-    console.log('find all documents');
+    console.log('find all document');
     console.log(docs);
     if (docs.length > 3){
       next_id = docs[3].postid;
