@@ -57,7 +57,7 @@ router.get('/:username/:postid', function (req, res, next) {
     } else {
       console.log('received username');
       let username = req.params.username;
-      let postid = req.params.postid;
+      let postid = parseInt(req.params.postid, 10);
       client.connect(function(err) {
         assert.equal(null, err);
         db = client.db(dbName);
@@ -163,9 +163,13 @@ router.put('/:username/:postid', function (req, res, next) {
         assert.equal(null, err);
         db = client.db(dbName);
         console.log("Connected successfully to server");
+        console.log('username: ' + username);
+        console.log('postid: ' + postid);
         db.collection('Posts').updateOne(query, update, function (err, result) {
           if (err) throw err;
-          if (result.matchedCount !== 0) {
+          console.log("match count " + result.matchedCount);
+          console.log("modify count " + result.modifiedCount);
+          if (result.modifiedCount == 0) {
             res.sendStatus(400);
             return;
           }
@@ -194,22 +198,25 @@ router.delete('/:username/:postid', function (req, res, next) {
         res.sendStatus(400);
         return
       }
-      let query = {
+      let filter = {
         'username': username,
         'postid': postid
       };
       client.connect(function(err) {
         assert.equal(null, err);
-        db = client.db(dbName);
+        let db = client.db(dbName);
         console.log("Connected successfully to server");
-        db.collection('Posts').deleteOne(query, function (err, result) {
+        console.log('username: ' + username);
+        console.log('postid: ' + postid);
+        db.collection('Posts').deleteOne(filter, function (err, result) {
           if (err) throw err;
-          if (result.matchedCount !== 0) {
+          console.log("delete count" + result.deletedCount);
+          if (result.deletedCount == 0) {
             res.sendStatus(400);
             return;
           }
           console.log("One document deleted");
-          res.sendStatus(200);
+          res.sendStatus(204);
         });
       });
     }
