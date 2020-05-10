@@ -39,9 +39,9 @@ function getDocs(res, username, start_id, next){
       if (docs.length == 0){
         next(createError(404));
       }
-      if (docs.length > 3) {
-        next_id = docs[3].postid;
-        docs = docs.slice(0, 3);
+      if (docs.length > 5) {
+        next_id = docs[5].postid;
+        docs = docs.slice(0, 5);
       }
       for (let doc of docs) {
         let title = doc.title;
