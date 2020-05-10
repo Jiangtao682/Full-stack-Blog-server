@@ -7,57 +7,77 @@ let commonmark = require('commonmark');
 let reader = new commonmark.Parser();
 let writer = new commonmark.HtmlRenderer();
 
+let bcrypt = require('bcryptjs');
+let jwt = require('jsonwebtoken');
+
 // Connection URL
 const url = 'mongodb://localhost:27017';
 const dbName = 'BlogServer';
 const client = new MongoClient(url, {useNewUrlParser: true});
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Express' });
+
+router.get('/', function(req, res, next){
+  let redirect = req.query.redirect;
+  res.render('login', {
+    redirect: redirect
+  });
 });
 
-
-
-router.get('/sss', function(req, res, next) {
-  console.log("get username.");
-  let username = req.params.username;
-  let postid = parseInt(req.params.postid, 10);
-  let posts = [];
+/* GET home page. */
+router.post('/', function(req, res, next) {
+  let username = req.body.username;
+  let inputPassword = req.body.password;
+  let redirect = req.body.redirect;
   client.connect(function(err) {
     assert.equal(null, err);
     db = client.db(dbName);
     console.log("Connected successfully to server");
-    db.collection('Posts').findOne({
-      'username': username,
-      'postid': postid
+    db.collection('Users').findOne({
+      'username': username
     }).then(function(doc){
       assert.equal(err, null);
       console.log('find document');
       console.log(doc);
       if (doc != null) {
-        let title = doc.title;
-        let parsedTitle = reader.parse(title);
-        let res_title = writer.render(parsedTitle);
-        let body = doc.body;
-        let parsedBody = reader.parse(body);
-        let res_body = writer.render(parsedBody);
-        let each_doc = {
-          title: res_title,
-          body: res_body
-        };
-        posts.push(each_doc);
-        res.render('blogServer', {
-          username: username,
-          posts: posts,
-          next: null
+        let passwordToCheck = doc.password;
+        bcrypt.compare(inputPassword, passwordToCheck, function (err, result) {
+          if (result == true){
+            let start = new Date();
+            start.setHours(start.getHours() + 2);
+            console.log(start);
+            let payload = {
+              "exp": start.getTime(),
+              "usr": username
+            };
+            let secretKey = "C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c";
+            let options = { algorithm: "HS256"};
+            let token = jwt.sign(payload, secretKey, options);
+            console.log("assembled token as follows:")
+            console.log(token);
+            res.cookie('jwt', token);
+            if (redirect != null) {
+              res.redirect(redirect);
+            } else {
+              res.status(200);
+              res.send('the authentication is successful.');
+            }
+          }else{
+            res.status(401);
+            res.render('login', {
+              redirect: redirect
+            });
+          }
         });
       }else{
-        next(createError(404));
+        res.status(401);
+        res.render('login', {
+          redirect: redirect
+        });
       }
     });
   });
 });
+
 
 module.exports = router;
 
