@@ -21,7 +21,7 @@ To run the program, type `./start.sh` in the root dir of this project.
 
 #### Login page
 
-![]()
+![[https://github.com/Jiangtao682/Mypro/blob/master/login%20page.png](https://github.com/Jiangtao682/Mypro/blob/master/login page.png)]()
 
 we have two initial user:
 
@@ -34,4 +34,6 @@ we have two initial user:
 > Password: blogserver
 
 #### Main page
+
+![[https://github.com/Jiangtao682/Mypro/blob/master/main%20page.png](https://github.com/Jiangtao682/Mypro/blob/master/main page.png)]()
 
