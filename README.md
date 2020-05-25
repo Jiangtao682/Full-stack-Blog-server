@@ -15,23 +15,13 @@ $ ng --version
 
 ### Run
 
-To run the program, type `./start.sh` in the root dir of this project.
+Run  `./start.sh` at the root dir of this project.
 
 ### User interface
 
 #### Login page
 
 ![[https://github.com/Jiangtao682/Mypro/blob/master/login%20page.png](https://github.com/Jiangtao682/Mypro/blob/master/login page.png)]()
-
-we have two initial user:
-
-> Name: cs144
->
-> Password: password
-
-> Name: user2
->
-> Password: blogserver
 
 #### Main page
 
