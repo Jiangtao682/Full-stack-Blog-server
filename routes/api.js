@@ -16,11 +16,12 @@ const client = new MongoClient(url, {useNewUrlParser: true});
 
 router.get('/:username', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token == null)
+  if (token == null) {
     res.status(401).send('Unauthorized!');
+  }
   else {
     var decoded = jwt.verify(token, 'C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c')
-    if (decoded.usr != req.params.username || decoded.exp * 1000 <= Date.now()) {
+    if (decoded.usr !== req.params.username || decoded.exp * 1000 <= Date.now()) {
       res.status(401).send('Unauthorized!');
     } else {
       console.log('received username');
@@ -35,8 +36,8 @@ router.get('/:username', function (req, res, next) {
           'postid': 1
         }).toArray(function (err, docs) {
           assert.equal(null, err);
-          console.log("Found the following records");
-          console.log(docs);
+          // console.log("Found the following records");
+          // console.log(docs);
           res.status(200);
           res.json(docs);
         });
@@ -48,11 +49,12 @@ router.get('/:username', function (req, res, next) {
 
 router.get('/:username/:postid', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token == null)
+  if (token == null) {
     res.status(401).send('Unauthorized!');
+  }
   else {
     var decoded = jwt.verify(token, 'C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c')
-    if (decoded.usr != req.params.username || decoded.exp * 1000 <= Date.now()) {
+    if (decoded.usr !== req.params.username || decoded.exp * 1000 <= Date.now()) {
       res.status(401).send('Unauthorized!');
     } else {
       console.log('received username');
@@ -83,11 +85,12 @@ router.get('/:username/:postid', function (req, res, next) {
 
 router.post('/:username/:postid', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token == null)
+  if (token == null) {
     res.status(401).send('Unauthorized!');
+  }
   else {
     var decoded = jwt.verify(token, 'C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c')
-    if (decoded.usr != req.params.username || decoded.exp * 1000 <= Date.now()) {
+    if (decoded.usr !== req.params.username || decoded.exp * 1000 <= Date.now()) {
       res.status(401).send('Unauthorized!');
     } else {
       console.log('received username');
@@ -134,11 +137,12 @@ router.post('/:username/:postid', function (req, res, next) {
 
 router.put('/:username/:postid', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token == null)
+  if (token == null) {
     res.status(401).send('Unauthorized!');
+  }
   else {
     var decoded = jwt.verify(token, 'C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c')
-    if (decoded.usr != req.params.username || decoded.exp * 1000 <= Date.now()) {
+    if (decoded.usr !== req.params.username || decoded.exp * 1000 <= Date.now()) {
       res.status(401).send('Unauthorized!');
     } else {
       console.log('received username');
@@ -169,7 +173,7 @@ router.put('/:username/:postid', function (req, res, next) {
           if (err) throw err;
           console.log("match count " + result.matchedCount);
           console.log("modify count " + result.modifiedCount);
-          if (result.modifiedCount == 0) {
+          if (result.modifiedCount === 0) {
             res.sendStatus(400);
             return;
           }
@@ -184,11 +188,12 @@ router.put('/:username/:postid', function (req, res, next) {
 
 router.delete('/:username/:postid', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token == null)
+  if (token == null) {
     res.status(401).send('Unauthorized!');
+  }
   else {
     var decoded = jwt.verify(token, 'C-UFRaksvPKhx1txJYFcut3QGxsafPmwCY6SCly3G6c')
-    if (decoded.usr != req.params.username || decoded.exp * 1000 <= Date.now()) {
+    if (decoded.usr !== req.params.username || decoded.exp * 1000 <= Date.now()) {
       res.status(401).send('Unauthorized!');
     } else {
       console.log('received username');
@@ -211,7 +216,7 @@ router.delete('/:username/:postid', function (req, res, next) {
         db.collection('Posts').deleteOne(filter, function (err, result) {
           if (err) throw err;
           console.log("delete count" + result.deletedCount);
-          if (result.deletedCount == 0) {
+          if (result.deletedCount === 0) {
             res.sendStatus(400);
             return;
           }
