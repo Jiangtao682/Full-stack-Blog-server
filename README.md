@@ -21,7 +21,7 @@ To run the program, type `./start.sh` in the root dir of this project.
 
 #### Login page
 
-![Screen Shot 2020-05-25 at 2.36.05 PM](/Users/chen/Coursework/CS144/share/project3/Mypro/Screen Shot 2020-05-25 at 2.36.05 PM.png)
+![]()
 
 we have two initial user:
 
@@ -33,6 +33,5 @@ we have two initial user:
 >
 > Password: blogserver
 
-#### Functional page
+#### Main page
 
-![Screen Shot 2020-05-25 at 2.36.29 PM](/Users/chen/Coursework/CS144/share/project3/Mypro/Screen Shot 2020-05-25 at 2.36.29 PM.png)
