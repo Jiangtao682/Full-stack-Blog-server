@@ -27,6 +27,19 @@ app.use('/users', usersRouter);
 app.use('/blog', blogRouter);
 app.use('/login', loginRouter);
 app.use('/api', apiRouter);
+app.get('/list', (req, res)=>{
+  res.redirect('/editor/');
+})
+
+/* Request Handling Chain
+
+Multiple handlers may be attached at the same path
+
+When multiple handlers match a request, they are processed top down in the sequence they are attached
+Request handling chain
+Inside a handler, calling the third parameter next() exits from the current handler and moves on to the next in the chain
+
+If next() is not called, the request processing stops there, ignoring the rest in the chain  */
 
 app.get('/editor', function (req, res, next) {
   let token = req.cookies.jwt;
@@ -42,7 +55,7 @@ app.get('/editor', function (req, res, next) {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // use the file in the public as a link address.
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
