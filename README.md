@@ -21,9 +21,7 @@ Run  `./start.sh` at the root dir of this project.
 
 #### Login page
 
-![[https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/login%20page.png](https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/login page.png)]()
-
 #### Main page
 
-![[https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/main%20page.png](https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/main page.png)]()
+
 
