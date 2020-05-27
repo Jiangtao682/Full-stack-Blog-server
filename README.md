@@ -25,5 +25,5 @@ Run  `./start.sh` at the root dir of this project.
 
 #### Main page
 
-![[Main page](https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/main%20page.png?raw=true)]()
+![Main page](https://github.com/Jiangtao682/Full-stack-Blog-server/blob/master/main%20page.png?raw=true)
 
